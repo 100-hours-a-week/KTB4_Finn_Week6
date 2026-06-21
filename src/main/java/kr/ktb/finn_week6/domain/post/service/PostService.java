@@ -84,10 +84,10 @@ public class PostService {
 
     @Transactional
     public void deletePost(Long postId, Long sessionUserId){
-        permissionValidator.validatePermission(postId, sessionUserId);
         Post targetPost = postRepository.findById(postId).orElseThrow(
                 () -> new NoSuchElementException(RequestMessage.NOT_FOUND_POST.getDescription())
         );
+        permissionValidator.validatePermission(targetPost.getUser().getId(), sessionUserId);
         targetPost.setDeleted();
     }
 
