@@ -5,6 +5,7 @@ import kr.ktb.finn_week6.domain.like.Like;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -31,6 +32,12 @@ public class LikeRepository {
                 .setParameter("postId", postId)
                 .setParameter("userId", userId)
                 .getResultList().stream().findFirst();
+    }
+
+    public List<Like> findByPostId(Long postId){
+        return em.createQuery("SELECT l FROM Like l join fetch l.post WHERE l.post.id = :postId", Like.class)
+                .setParameter("postId", postId)
+                .getResultList();
     }
 
 }

@@ -1,7 +1,10 @@
 package kr.ktb.finn_week6.domain.post.service;
 
+import kr.ktb.finn_week6.domain.comment.Comment;
 import kr.ktb.finn_week6.domain.comment.dto.response.CommentDetailResponse;
+import kr.ktb.finn_week6.domain.comment.repository.CommentRepository;
 import kr.ktb.finn_week6.domain.comment.service.CommentService;
+import kr.ktb.finn_week6.domain.like.Like;
 import kr.ktb.finn_week6.domain.like.repository.LikeRepository;
 import kr.ktb.finn_week6.domain.post.Post;
 import kr.ktb.finn_week6.domain.post.dto.command.CreatePostCommand;
@@ -29,6 +32,7 @@ public class PostService {
     private final UserRepository userRepository;
     private final LikeRepository likeRepository;
     private final CommentService commentService;
+    private final CommentRepository commentRepository;
     private final PermissionValidator permissionValidator;
 
     @Transactional
@@ -89,6 +93,17 @@ public class PostService {
         );
         permissionValidator.validatePermission(targetPost.getUser().getId(), sessionUserId);
         targetPost.setDeleted();
+        List<Comment> comments = commentRepository.findByPostIdWithPost(postId);
+        for (Comment comment : comments) {
+            comment.setDeleted();
+            comment.getPost().decreaseCommentCount();
+        }
+
+        List<Like> byPostId = likeRepository.findByPostId(postId);
+        for (Like like : byPostId) {
+            like.setDeleted();
+            like.getPost().decreaseLikeCount();
+        }
     }
 
 }

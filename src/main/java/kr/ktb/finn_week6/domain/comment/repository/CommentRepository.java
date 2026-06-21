@@ -23,8 +23,13 @@ public class CommentRepository {
         return Optional.ofNullable(em.find(Comment.class, id));
     }
 
-    public List<Comment> findByPostId(Long postId) {
+    public List<Comment> findByPostIdWithUser(Long postId) {
         return em.createQuery("SELECT c FROM Comment c join fetch c.user WHERE c.post.id = :postId AND c.isDeleted = false", Comment.class)
+                .setParameter("postId", postId)
+                .getResultList();
+    }
+    public List<Comment> findByPostIdWithPost(Long postId){
+        return em.createQuery("SELECT c FROM Comment c join fetch c.post WHERE c.post.id = :postId AND c.isDeleted = false", Comment.class)
                 .setParameter("postId", postId)
                 .getResultList();
     }

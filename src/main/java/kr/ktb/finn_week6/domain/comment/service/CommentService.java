@@ -48,7 +48,7 @@ public class CommentService{
 
     public List<CommentDetailResponse> getCommentsByPostId(Long postId, Long loginUserId){
 
-        List<Comment> comments = commentRepository.findByPostId(postId);
+        List<Comment> comments = commentRepository.findByPostIdWithUser(postId);
 
         return comments.stream()
                 .map(comment -> {
