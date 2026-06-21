@@ -1,0 +1,40 @@
+package kr.ktb.finn_week6.domain.post.dto.response;
+
+import kr.ktb.finn_week6.domain.comment.dto.response.CommentDetailResponse;
+import kr.ktb.finn_week6.domain.post.Post;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+public record PostDetailResponse(
+        Long postId,
+        String title,
+        String username,
+        LocalDateTime createdAt,
+        String contentImg,
+        String content,
+        int likeCount,
+        int viewCount,
+        int commentCount,
+        boolean isMine,
+        boolean isLiked,
+        List<CommentDetailResponse> comments
+) {
+    public static PostDetailResponse createPostDetailResponse(Post post, boolean isMine, boolean isLiked, List<CommentDetailResponse> comments){
+        return new PostDetailResponse(
+                post.getId(),
+                post.getTitle(),
+                post.getUser().getNickname(),
+                post.getCreatedAt(),
+                post.getContentImg(),
+                post.getContent(),
+                post.getLikeCount(),
+                post.getViewCount(),
+                post.getCommentCount(),
+                isMine,
+                isLiked,
+                comments
+        );
+
+    }
+}
