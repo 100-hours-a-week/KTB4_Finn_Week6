@@ -36,7 +36,7 @@ public class Like {
     boolean isDeleted;
     private LocalDateTime deletedAt;
 
-    public Like() {
+    protected Like() {
     }
     public Like(User user, Post post) {
         this.user = user;
