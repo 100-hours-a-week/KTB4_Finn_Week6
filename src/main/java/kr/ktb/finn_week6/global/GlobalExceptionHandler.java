@@ -72,19 +72,20 @@ public class GlobalExceptionHandler {
                 .body(new ApiResponse<>(e.getMessage(),null));
     }
 
-    //500
-    @ExceptionHandler(InternalException.class)
-    public ResponseEntity<ApiResponse<Void>> handleInternalException(InternalException e){
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ApiResponse<>(e.getMessage(),null));
-    }
 
     @ExceptionHandler(IllegalResourceStateException.class)
     public ResponseEntity<ApiResponse<Void>> handleIllegalResourceStateException(IllegalResourceStateException e){
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(new ApiResponse<>(e.getMessage(),null));
+    }
+
+    //500
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiResponse<Void>> handleException(Exception e) {
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ApiResponse<>("Internal server error", null));
     }
 
 
