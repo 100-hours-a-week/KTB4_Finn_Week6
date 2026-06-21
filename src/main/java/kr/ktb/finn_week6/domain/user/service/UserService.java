@@ -12,13 +12,13 @@ import kr.ktb.finn_week6.global.PermissionValidator;
 import kr.ktb.finn_week6.global.RequestMessage;
 import kr.ktb.finn_week6.global.customException.DuplicateEmailException;
 import kr.ktb.finn_week6.global.customException.IncorrectPasswordException;
+import kr.ktb.finn_week6.global.customException.NoSuchEmailException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -41,7 +41,7 @@ public class UserService {
 
     public LoginUserResponse login(LoginUserCommand command){
         User user = userRepository.findByEmail(command.email()).orElseThrow(
-                () -> new NoSuchElementException(RequestMessage.NOT_FOUND.getDescription())
+                () -> new NoSuchEmailException(RequestMessage.NOT_FOUND_EMAIL.getDescription())
         );
         if(!command.password().equals(user.getPassword())){
             throw new IncorrectPasswordException(RequestMessage.INVALID_PASSWORD.getDescription());

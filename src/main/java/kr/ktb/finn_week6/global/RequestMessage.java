@@ -13,6 +13,7 @@ public enum RequestMessage {
     FORBIDDEN("Forbidden"),
     NOT_FOUND_USER("User not found"),
     NOT_FOUND_POST("Post not found"),
+    NOT_FOUND_EMAIL("Email not found"),
     RESOURCE_DELETED("Resource deleted"),
     ALREADY_LIKED("Already liked");
 

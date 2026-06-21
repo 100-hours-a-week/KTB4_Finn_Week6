@@ -3,7 +3,6 @@ package kr.ktb.finn_week6.global;
 
 import kr.ktb.finn_week6.global.customException.*;
 import kr.ktb.finn_week6.global.dto.ApiResponse;
-import org.apache.logging.log4j.util.InternalException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -67,6 +66,12 @@ public class GlobalExceptionHandler {
     //401
     @ExceptionHandler(IncorrectPasswordException.class)
     public ResponseEntity<ApiResponse<Void>> handleInvalidLoginException(IncorrectPasswordException e){
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(new ApiResponse<>(e.getMessage(),null));
+    }
+    @ExceptionHandler(NoSuchEmailException.class)
+    public ResponseEntity<ApiResponse<Void>> handleNoSuchEmailException(NoSuchEmailException e){
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
                 .body(new ApiResponse<>(e.getMessage(),null));
