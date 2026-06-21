@@ -29,6 +29,7 @@ public class User {
         this.email = email;
         this.password = password;
         this.profileImg = profileImg;
+        this.createdAt = LocalDateTime.now();
         this.isDeleted = false;
     }
 
