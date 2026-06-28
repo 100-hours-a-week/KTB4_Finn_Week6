@@ -14,12 +14,12 @@ import kr.ktb.finn_week6.domain.user.User;
 import kr.ktb.finn_week6.domain.user.repository.UserRepository;
 import kr.ktb.finn_week6.global.PermissionValidator;
 import kr.ktb.finn_week6.global.RequestMessage;
+import kr.ktb.finn_week6.global.dto.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @Transactional(readOnly = true)
@@ -33,10 +33,10 @@ public class CommentService{
     @Transactional
     public CreateCommentResponse register(CreateCommentCommand command){
         User user = userRepository.findById(command.userId()).orElseThrow(
-                () -> new NoSuchElementException(RequestMessage.NOT_FOUND_USER.getDescription())
+                () -> new NotFoundException(RequestMessage.NOT_FOUND_USER.getDescription())
         );
         Post post = postRepository.findById(command.postId()).orElseThrow(
-                () -> new NoSuchElementException(RequestMessage.NOT_FOUND_POST.getDescription())
+                () -> new NotFoundException(RequestMessage.NOT_FOUND_POST.getDescription())
         );
 
         Comment comment = new Comment(user, post, command.content());
@@ -75,7 +75,7 @@ public class CommentService{
     public UpdateCommentResponse updateComment(UpdateCommentCommand command){
 
         Comment comment = commentRepository.findById(command.commentId()).orElseThrow(
-                () -> new NoSuchElementException(RequestMessage.NOT_FOUND.getDescription())
+                () -> new NotFoundException(RequestMessage.NOT_FOUND.getDescription())
         );
         permissionValidator.validatePermission(comment.getUser().getId(), command.loginUserId());
         comment.updateComment(command.comment());
@@ -85,7 +85,7 @@ public class CommentService{
     @Transactional
     public void deleteComment(DeleteCommentCommand command){
         Comment comment = commentRepository.findById(command.id()).orElseThrow(
-                () -> new NoSuchElementException(RequestMessage.NOT_FOUND.getDescription())
+                () -> new NotFoundException(RequestMessage.NOT_FOUND.getDescription())
         );
         permissionValidator.validatePermission(comment.getUser().getId(),command.sessionUserId());
         comment.setDeleted();

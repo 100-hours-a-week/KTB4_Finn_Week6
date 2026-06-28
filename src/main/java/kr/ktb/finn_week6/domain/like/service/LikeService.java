@@ -11,11 +11,10 @@ import kr.ktb.finn_week6.domain.user.repository.UserRepository;
 import kr.ktb.finn_week6.global.PermissionValidator;
 import kr.ktb.finn_week6.global.RequestMessage;
 import kr.ktb.finn_week6.global.customException.IllegalResourceStateException;
+import kr.ktb.finn_week6.global.dto.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -29,10 +28,10 @@ public class LikeService {
     @Transactional
     public LikeResponse likePost(LikePostCommand command){
         User user = userRepository.findById(command.sessionUserId()).orElseThrow(
-                () -> new NoSuchElementException(RequestMessage.NOT_FOUND_USER.getDescription())
+                () -> new NotFoundException(RequestMessage.NOT_FOUND_USER.getDescription())
         );
         Post post = postRepository.findById(command.postId()).orElseThrow(
-                () -> new NoSuchElementException(RequestMessage.NOT_FOUND_POST.getDescription())
+                () -> new NotFoundException(RequestMessage.NOT_FOUND_POST.getDescription())
         );
         Like like = likeRepository.findByPostIdAndUserId(command.postId(), command.sessionUserId()).orElse(null);
 
@@ -55,7 +54,7 @@ public class LikeService {
     @Transactional
     public void deleteLike(Long likeId, Long sessionUserId){
         Like like = likeRepository.findById(likeId).orElseThrow(
-                () -> new NoSuchElementException(RequestMessage.NOT_FOUND.getDescription())
+                () -> new NotFoundException(RequestMessage.NOT_FOUND.getDescription())
         );
         permissionValidator.validatePermission(like.getUser().getId(), sessionUserId);
         like.setDeleted();

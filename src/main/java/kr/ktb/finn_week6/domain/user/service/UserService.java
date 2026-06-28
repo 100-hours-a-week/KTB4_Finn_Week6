@@ -13,12 +13,12 @@ import kr.ktb.finn_week6.global.RequestMessage;
 import kr.ktb.finn_week6.global.customException.DuplicateEmailException;
 import kr.ktb.finn_week6.global.customException.IncorrectPasswordException;
 import kr.ktb.finn_week6.global.customException.NoSuchEmailException;
+import kr.ktb.finn_week6.global.dto.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @Transactional(readOnly = true)
@@ -50,7 +50,7 @@ public class UserService {
 
     public UserDetailResponse getUserDetail(UserDetailCommand command){
         User targetUser = userRepository.findById(command.sessionUserId()).orElseThrow(
-                () -> new NoSuchElementException(RequestMessage.NOT_FOUND_USER.getDescription())
+                () -> new NotFoundException(RequestMessage.NOT_FOUND_USER.getDescription())
         );
 
         return new UserDetailResponse(targetUser.getId(), targetUser.getNickname(), targetUser.getEmail(), targetUser.getProfileImg());
@@ -59,7 +59,7 @@ public class UserService {
     @Transactional
     public UserDetailResponse updateUserDetail(UpdateUserCommand command){
         User targetUser = userRepository.findById(command.sessionUserId()).orElseThrow(
-                () -> new NoSuchElementException(RequestMessage.NOT_FOUND_USER.getDescription())
+                () -> new NotFoundException(RequestMessage.NOT_FOUND_USER.getDescription())
         );
         targetUser.updateUser(command.nickname(), command.profileImg());
         return new UserDetailResponse(targetUser.getId(), targetUser.getNickname(), targetUser.getEmail(), targetUser.getProfileImg());
@@ -68,7 +68,7 @@ public class UserService {
     @Transactional
     public void updatePassword(UpdatePasswordCommand command){
         User targetUser = userRepository.findById(command.sessionUserId()).orElseThrow(
-                () -> new NoSuchElementException(RequestMessage.NOT_FOUND_USER.getDescription())
+                () -> new NotFoundException(RequestMessage.NOT_FOUND_USER.getDescription())
         );
         targetUser.updatePassword(command.password());
     }
@@ -76,7 +76,7 @@ public class UserService {
     @Transactional
     public void deleteUser(DeleteUserCommand command){
         User targetUser = userRepository.findById(command.sessionUserId()).orElseThrow(
-                () -> new NoSuchElementException(RequestMessage.NOT_FOUND_USER.getDescription())
+                () -> new NotFoundException(RequestMessage.NOT_FOUND_USER.getDescription())
         );
         targetUser.setDeleted();
         List<Post> posts = postRepository.findByUserId(targetUser.getId());

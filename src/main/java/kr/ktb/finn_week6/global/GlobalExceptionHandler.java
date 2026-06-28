@@ -3,6 +3,7 @@ package kr.ktb.finn_week6.global;
 
 import kr.ktb.finn_week6.global.customException.*;
 import kr.ktb.finn_week6.global.dto.ApiResponse;
+import kr.ktb.finn_week6.global.dto.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -49,8 +50,8 @@ public class GlobalExceptionHandler {
                 .body(new ApiResponse<>(e.getMessage(),null));
     }
     //404
-    @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<ApiResponse<Void>> handleNoSuchElementException(NoSuchElementException e){
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleNotFoundException(NotFoundException e){
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(new ApiResponse<>(e.getMessage(),null));

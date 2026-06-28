@@ -16,13 +16,13 @@ import kr.ktb.finn_week6.domain.user.repository.UserRepository;
 import kr.ktb.finn_week6.global.PermissionValidator;
 import kr.ktb.finn_week6.global.RequestMessage;
 import kr.ktb.finn_week6.global.customException.IllegalResourceStateException;
+import kr.ktb.finn_week6.global.dto.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @Transactional(readOnly = true)
@@ -37,7 +37,7 @@ public class PostService {
     @Transactional
     public CreatePostResponse register(CreatePostCommand command){
         User user = userRepository.findById(command.userId()).orElseThrow(
-                () -> new NoSuchElementException(RequestMessage.NOT_FOUND_USER.getDescription())
+                () -> new NotFoundException(RequestMessage.NOT_FOUND_USER.getDescription())
         );
         Post post = new Post(user, command.title(), command.content(), command.contentImg());
         Post savedPost = postRepository.save(post);
@@ -47,7 +47,7 @@ public class PostService {
     @Transactional
     public PostDetailResponse getPostDetail(Long postId, Long sessionUserId){
         Post post = postRepository.findById(postId).orElseThrow(
-                () -> new NoSuchElementException(RequestMessage.NOT_FOUND_POST.getDescription())
+                () -> new NotFoundException(RequestMessage.NOT_FOUND_POST.getDescription())
         );
         post.updateViewCount();
 
@@ -75,7 +75,7 @@ public class PostService {
     @Transactional
     public UpdatePostResponse updatePost(UpdatePostCommand command){
         Post post = postRepository.findById(command.postId()).orElseThrow(
-                () -> new NoSuchElementException(RequestMessage.NOT_FOUND_POST.getDescription())
+                () -> new NotFoundException(RequestMessage.NOT_FOUND_POST.getDescription())
         );
         permissionValidator.validatePermission(post.getUser().getId(), command.loginUserId());
         post.updatePost(command.title(),command.content(), command.contentImg());
@@ -86,7 +86,7 @@ public class PostService {
     @Transactional
     public void deletePost(Long postId, Long sessionUserId){
         Post targetPost = postRepository.findById(postId).orElseThrow(
-                () -> new NoSuchElementException(RequestMessage.NOT_FOUND_POST.getDescription())
+                () -> new NotFoundException(RequestMessage.NOT_FOUND_POST.getDescription())
         );
         permissionValidator.validatePermission(targetPost.getUser().getId(), sessionUserId);
         targetPost.setDeleted();

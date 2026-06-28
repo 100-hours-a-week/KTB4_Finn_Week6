@@ -1,9 +1,14 @@
 package kr.ktb.finn_week6.domain.post.dto.request;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotBlank;
 import kr.ktb.finn_week6.domain.post.dto.command.UpdatePostCommand;
 
 public record UpdatePostRequest(
+        @NotBlank(message = "Title is required")
+        @Max(value = 26, message = "Title must be less than 26 characters")
         String title,
+        @NotBlank(message = "Content is required")
         String content,
         String contentImg
 ) {
