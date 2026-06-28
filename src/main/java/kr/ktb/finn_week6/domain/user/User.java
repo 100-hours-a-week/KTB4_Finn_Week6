@@ -38,6 +38,10 @@ public class User {
         this.profileImg = profileImg;
     }
 
+    public void updatePassword(String password){
+        this.password = password;
+    }
+
     public void setDeleted(){
         this.isDeleted = true;
         this.deletedAt = LocalDateTime.now();

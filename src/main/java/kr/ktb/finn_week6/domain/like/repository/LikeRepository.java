@@ -27,6 +27,12 @@ public class LikeRepository {
      return Optional.ofNullable(em.find(Like.class, id));
     }
 
+    public Optional<Like> findUndeletedByPostIdAndUserId(Long postId, Long userId){
+        return em.createQuery("SELECT l FROM Like l WHERE l.post.id = :postId AND l.user.id = :userId AND l.isDeleted = false", Like.class)
+                .setParameter("postId", postId)
+                .setParameter("userId", userId)
+                .getResultList().stream().findFirst();
+    }
     public Optional<Like> findByPostIdAndUserId(Long postId, Long userId){
         return em.createQuery("SELECT l FROM Like l WHERE l.post.id = :postId AND l.user.id = :userId", Like.class)
                 .setParameter("postId", postId)

@@ -61,6 +61,7 @@ public class CommentService{
                             comment.getId(),
                             comment.getUser().getId(),
                             user.getNickname(),
+                            user.getProfileImg(),
                             comment.getCreatedAt(),
                             comment.getContent(),
                             commentOwner
@@ -77,7 +78,7 @@ public class CommentService{
                 () -> new NoSuchElementException(RequestMessage.NOT_FOUND.getDescription())
         );
         permissionValidator.validatePermission(comment.getUser().getId(), command.loginUserId());
-        comment.updateComment(command.content());
+        comment.updateComment(command.comment());
         return UpdateCommentResponse.createResponse(comment);
     }
 

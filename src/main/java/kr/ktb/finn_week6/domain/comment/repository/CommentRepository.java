@@ -24,7 +24,7 @@ public class CommentRepository {
     }
 
     public List<Comment> findByPostIdWithUser(Long postId) {
-        return em.createQuery("SELECT c FROM Comment c join fetch c.user WHERE c.post.id = :postId AND c.isDeleted = false", Comment.class)
+        return em.createQuery("SELECT c FROM Comment c join fetch c.user WHERE c.post.id = :postId AND c.isDeleted = false order by c.createdAt DESC", Comment.class)
                 .setParameter("postId", postId)
                 .getResultList();
     }

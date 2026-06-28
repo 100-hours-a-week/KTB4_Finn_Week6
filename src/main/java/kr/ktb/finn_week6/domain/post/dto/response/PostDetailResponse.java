@@ -1,6 +1,7 @@
 package kr.ktb.finn_week6.domain.post.dto.response;
 
 import kr.ktb.finn_week6.domain.comment.dto.response.CommentDetailResponse;
+import kr.ktb.finn_week6.domain.like.Like;
 import kr.ktb.finn_week6.domain.post.Post;
 
 import java.time.LocalDateTime;
@@ -17,10 +18,9 @@ public record PostDetailResponse(
         int viewCount,
         int commentCount,
         boolean isMine,
-        boolean isLiked,
-        List<CommentDetailResponse> comments
+        Like like
 ) {
-    public static PostDetailResponse createPostDetailResponse(Post post, boolean isMine, boolean isLiked, List<CommentDetailResponse> comments){
+    public static PostDetailResponse createPostDetailResponse(Post post, boolean isMine, Like like){
         return new PostDetailResponse(
                 post.getId(),
                 post.getTitle(),
@@ -32,8 +32,7 @@ public record PostDetailResponse(
                 post.getViewCount(),
                 post.getCommentCount(),
                 isMine,
-                isLiked,
-                comments
+                like
         );
 
     }

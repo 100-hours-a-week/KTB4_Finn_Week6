@@ -31,7 +31,6 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final LikeRepository likeRepository;
-    private final CommentService commentService;
     private final CommentRepository commentRepository;
     private final PermissionValidator permissionValidator;
 
@@ -57,11 +56,9 @@ public class PostService {
         }
 
         boolean isPostAuthor = post.getUser().getId().equals(sessionUserId);
-        boolean isLiked = likeRepository.existsByPostIdAndUserId(postId, sessionUserId);
+        Like like = likeRepository.findUndeletedByPostIdAndUserId(postId, sessionUserId).orElse(null);
 
-        List<CommentDetailResponse> comments = commentService.getCommentsByPostId(postId, sessionUserId);
-
-        return PostDetailResponse.createPostDetailResponse(post,isPostAuthor, isLiked, comments);
+        return PostDetailResponse.createPostDetailResponse(post,isPostAuthor, like);
     }
 
     public List<PostResponse> getPostList(){

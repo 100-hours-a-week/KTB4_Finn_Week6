@@ -12,7 +12,7 @@ public record UpdateUserRequest(
         @URL(message = "Profile image must be a valid URL")
         String profileImg
 ) {
-    public UpdateUserCommand updateUserCommand(Long userId, Long sessionUserId){
-        return new UpdateUserCommand(userId, sessionUserId, nickname(), profileImg());
+    public UpdateUserCommand updateUserCommand(Long sessionUserId){
+        return new UpdateUserCommand(sessionUserId, nickname(), profileImg());
     }
 }

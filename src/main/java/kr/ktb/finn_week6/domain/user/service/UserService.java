@@ -26,7 +26,6 @@ import java.util.NoSuchElementException;
 public class UserService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
-    private final PermissionValidator permissionValidator;
 
 
     @Transactional
@@ -50,8 +49,7 @@ public class UserService {
     }
 
     public UserDetailResponse getUserDetail(UserDetailCommand command){
-        permissionValidator.validatePermission(command.id(), command.sessionUserId());
-        User targetUser = userRepository.findById(command.id()).orElseThrow(
+        User targetUser = userRepository.findById(command.sessionUserId()).orElseThrow(
                 () -> new NoSuchElementException(RequestMessage.NOT_FOUND_USER.getDescription())
         );
 
@@ -60,8 +58,7 @@ public class UserService {
 
     @Transactional
     public UserDetailResponse updateUserDetail(UpdateUserCommand command){
-        permissionValidator.validatePermission(command.id(), command.sessionUserId());
-        User targetUser = userRepository.findById(command.id()).orElseThrow(
+        User targetUser = userRepository.findById(command.sessionUserId()).orElseThrow(
                 () -> new NoSuchElementException(RequestMessage.NOT_FOUND_USER.getDescription())
         );
         targetUser.updateUser(command.nickname(), command.profileImg());
@@ -69,9 +66,16 @@ public class UserService {
     }
 
     @Transactional
+    public void updatePassword(UpdatePasswordCommand command){
+        User targetUser = userRepository.findById(command.sessionUserId()).orElseThrow(
+                () -> new NoSuchElementException(RequestMessage.NOT_FOUND_USER.getDescription())
+        );
+        targetUser.updatePassword(command.password());
+    }
+
+    @Transactional
     public void deleteUser(DeleteUserCommand command){
-        permissionValidator.validatePermission(command.id(), command.sessionUserId());
-        User targetUser = userRepository.findById(command.id()).orElseThrow(
+        User targetUser = userRepository.findById(command.sessionUserId()).orElseThrow(
                 () -> new NoSuchElementException(RequestMessage.NOT_FOUND_USER.getDescription())
         );
         targetUser.setDeleted();

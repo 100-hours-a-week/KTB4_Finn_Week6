@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import kr.ktb.finn_week6.domain.user.dto.command.*;
 import kr.ktb.finn_week6.domain.user.dto.request.CreateUserRequest;
 import kr.ktb.finn_week6.domain.user.dto.request.LoginUserRequest;
+import kr.ktb.finn_week6.domain.user.dto.request.UpdatePasswordRequest;
 import kr.ktb.finn_week6.domain.user.dto.request.UpdateUserRequest;
 import kr.ktb.finn_week6.domain.user.dto.response.CreateUserResponse;
 import kr.ktb.finn_week6.domain.user.dto.response.LoginUserResponse;
@@ -36,26 +37,36 @@ public class UserController {
     }
 
 
-    @GetMapping("/{userId}")
+    @GetMapping("/me")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<UserDetailResponse> getUserDetail(@PathVariable Long userId, HttpSession session) {
+    public ApiResponse<UserDetailResponse> getUserDetail(HttpSession session) {
         Long sessionUserId = sessionManager.getSessionUserId(session);
 
-        UserDetailCommand userDetailCommand = new UserDetailCommand(userId, sessionUserId);
+        UserDetailCommand userDetailCommand = new UserDetailCommand(sessionUserId);
         UserDetailResponse userDetailResponse = userService.getUserDetail(userDetailCommand);
 
         return new ApiResponse<>(RequestMessage.SUCCESS.getDescription(), userDetailResponse);
     }
 
-    @PatchMapping("/{userId}")
+    @PatchMapping("/me")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<UserDetailResponse> updateUserDetail(@PathVariable Long userId, @Valid @RequestBody UpdateUserRequest request, HttpSession session) {
+    public ApiResponse<UserDetailResponse> updateUserDetail(@Valid @RequestBody UpdateUserRequest request, HttpSession session) {
         Long sessionUserId = sessionManager.getSessionUserId(session);
 
-        UpdateUserCommand updateUserCommand = request.updateUserCommand(userId, sessionUserId);
+        UpdateUserCommand updateUserCommand = request.updateUserCommand(sessionUserId);
         UserDetailResponse userDetailResponse = userService.updateUserDetail(updateUserCommand);
 
         return new ApiResponse<>(RequestMessage.SUCCESS.getDescription(), userDetailResponse);
+    }
+
+    @PatchMapping("/me/password")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<Void> updateUserPassword(@Valid @RequestBody UpdatePasswordRequest request, HttpSession session){
+        Long sessionUserId = sessionManager.getSessionUserId(session);
+
+        UpdatePasswordCommand command = request.toCommand(sessionUserId);
+        userService.updatePassword(command);
+        return new ApiResponse<>(RequestMessage.SUCCESS.getDescription(), null);
     }
 
 
@@ -74,16 +85,16 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<Void> logout(HttpSession session) {
         session.invalidate();
-
         return new ApiResponse<>(RequestMessage.SUCCESS.getDescription(), null);
     }
 
-    @DeleteMapping("/{userId}")
+    @DeleteMapping("/me")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUser(@PathVariable Long userId, HttpSession session) {
+    public void deleteUser(HttpSession session) {
         Long sessionUserId = sessionManager.getSessionUserId(session);
-        DeleteUserCommand deleteUserCommand = new DeleteUserCommand(userId, sessionUserId);
+        DeleteUserCommand deleteUserCommand = new DeleteUserCommand(sessionUserId);
         userService.deleteUser(deleteUserCommand);
+        session.invalidate();
     }
 
 }

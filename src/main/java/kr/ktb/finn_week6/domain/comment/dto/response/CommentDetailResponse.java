@@ -7,6 +7,7 @@ public record CommentDetailResponse(
         Long id,
         Long userId,
         String nickname,
+        String profileImg,
         LocalDateTime createdAt,
         String content,
         boolean isMine

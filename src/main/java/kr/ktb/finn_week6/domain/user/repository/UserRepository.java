@@ -20,7 +20,13 @@ public class UserRepository {
         em.persist(user);
     }
     public Optional<User> findById(Long id){
-        return Optional.ofNullable(em.find(User.class, id));
+        try{
+            User user = em.createQuery("select u from User u where u.id = :id AND u.isDeleted = false", User.class)
+                    .setParameter("id", id).getSingleResult();
+            return Optional.ofNullable(user);
+        }catch (Exception e){
+            return Optional.empty();
+        }
     }
 
     public boolean existsByEmail(String email) {
@@ -31,7 +37,7 @@ public class UserRepository {
 
     public Optional<User> findByEmail(String email){
         try{
-            User user = em.createQuery("select u from User u where u.email = :email",
+            User user = em.createQuery("select u from User u where u.email = :email AND u.isDeleted = false",
                     User.class).setParameter("email", email).getSingleResult();
             return Optional.ofNullable(user);
         }catch (Exception e){

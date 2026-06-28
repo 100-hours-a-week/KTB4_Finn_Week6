@@ -4,9 +4,12 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import kr.ktb.finn_week6.domain.comment.dto.command.CreateCommentCommand;
 import kr.ktb.finn_week6.domain.comment.dto.request.CreateCommentRequest;
+import kr.ktb.finn_week6.domain.comment.dto.response.CommentDetailResponse;
+import kr.ktb.finn_week6.domain.comment.dto.response.CommentListResponse;
 import kr.ktb.finn_week6.domain.comment.dto.response.CreateCommentResponse;
 import kr.ktb.finn_week6.domain.comment.service.CommentService;
 import kr.ktb.finn_week6.domain.like.dto.command.LikePostCommand;
+import kr.ktb.finn_week6.domain.like.dto.response.LikeResponse;
 import kr.ktb.finn_week6.domain.like.service.LikeService;
 import kr.ktb.finn_week6.domain.post.dto.command.CreatePostCommand;
 import kr.ktb.finn_week6.domain.post.dto.command.UpdatePostCommand;
@@ -78,6 +81,15 @@ public class PostController {
         return new ApiResponse<>(RequestMessage.SUCCESS.getDescription(), register);
     }
 
+    @GetMapping("/{postId}/comments")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<CommentListResponse> getCommentsByPostId(@PathVariable Long postId, HttpSession session){
+        Long sessionUserId = sessionManager.getSessionUserId(session);
+        List<CommentDetailResponse> comments = commentService.getCommentsByPostId(postId, sessionUserId);
+        CommentListResponse commentListResponse = CommentListResponse.createCommentListResponse(comments);
+        return new ApiResponse<>(RequestMessage.SUCCESS.getDescription(), commentListResponse);
+    }
+
     @DeleteMapping("/{postId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletePost(@PathVariable Long postId, HttpSession session){
@@ -86,11 +98,11 @@ public class PostController {
     }
 
     @PostMapping("/{postId}/like")
-    public ApiResponse<Void> likePost(@PathVariable Long postId, HttpSession session){
+    public ApiResponse<LikeResponse> likePost(@PathVariable Long postId, HttpSession session){
         Long sessionUserId = sessionManager.getSessionUserId(session);
-        LikePostCommand likePostCommand = LikePostCommand.createLikePostCommand(postId, sessionUserId);
-        likeService.likePost(likePostCommand);
-        return new ApiResponse<>(RequestMessage.SUCCESS.getDescription(), null);
+        LikePostCommand likePostCommand = LikePostCommand.createLikePostCommand(sessionUserId, postId);
+        LikeResponse likeResponseDto = likeService.likePost(likePostCommand);
+        return new ApiResponse<>(RequestMessage.SUCCESS.getDescription(), likeResponseDto);
     }
 
 }
