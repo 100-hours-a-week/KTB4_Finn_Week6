@@ -1,11 +1,14 @@
 package kr.ktb.finn_week6.domain.user.dto.request;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import kr.ktb.finn_week6.domain.user.dto.command.CreateUserCommand;
 
 public record CreateUserRequest(
         @NotBlank(message = "Nickname is required")
+        @Size(max = 10, message = "Nickname must be less than 10 characters")
         String nickname,
 
         @NotBlank(message = "Email is required")

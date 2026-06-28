@@ -4,10 +4,10 @@ import jakarta.validation.constraints.NotBlank;
 import kr.ktb.finn_week6.domain.comment.dto.command.CreateCommentCommand;
 
 public record CreateCommentRequest(
-        @NotBlank(message = "Content is required")
-        String content
+        @NotBlank(message = "Comment is required")
+        String comment
 ) {
     public CreateCommentCommand createCommentCommand(Long postId, Long userId, CreateCommentRequest rerequest){
-        return new CreateCommentCommand(postId, userId, rerequest.content());
+        return new CreateCommentCommand(postId, userId, rerequest.comment);
     }
 }

@@ -8,7 +8,6 @@ import kr.ktb.finn_week6.domain.user.dto.response.CreateUserResponse;
 import kr.ktb.finn_week6.domain.user.dto.response.LoginUserResponse;
 import kr.ktb.finn_week6.domain.user.dto.response.UserDetailResponse;
 import kr.ktb.finn_week6.domain.user.repository.UserRepository;
-import kr.ktb.finn_week6.global.PermissionValidator;
 import kr.ktb.finn_week6.global.RequestMessage;
 import kr.ktb.finn_week6.global.customException.DuplicateEmailException;
 import kr.ktb.finn_week6.global.customException.IncorrectPasswordException;
